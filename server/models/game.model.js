@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
 import crypto from 'crypto'
 
-const VRObjectChema = new mongoose.Schema({
+const VRObjectSchema = new mongoose.Schema({
     objUrl: {
         type: String, trim: true,
         required: 'Obj file is required'
