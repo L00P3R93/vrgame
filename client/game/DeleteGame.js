@@ -1,6 +1,5 @@
 import React, {useState} from 'react'
 import PropTypes from 'prop-types'
-import IconButton from '@material-ui/core/IconButton'
 import Button from '@material-ui/core/Button'
 import DeleteIcon from '@material-ui/icons/Delete'
 import Dialog from '@material-ui/core/Dialog'
@@ -9,61 +8,55 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import auth from './../auth/auth-helper'
-import {remove} from './api-user.js'
-import {Redirect} from 'react-router-dom'
+import {remove} from './api-game.js'
 
-export default function DeleteUser(props) {
+export default function DeleteGame(props) {
 	const [open, setOpen] = useState(false)
-	const [redirect, setRedirect] = useState(false)
-
+	
 	const jwt = auth.isAuthenticated()
 	const clickButton = () => {
 		setOpen(true)
 	}
-	const deleteAccount = () => { 
+	const deleteGame = () => {
 		remove({
-			userId: props.userId
+			gameId: props.game._id
 		}, {t: jwt.token}).then((data) => {
-			if (data && data.error) {
+			if (data.error) {
 				console.log(data.error)
 			} else {
-				auth.clearJWT(() => console.log('deleted'))
-				setRedirect(true)
+				setOpen(false)
+				props.removeGame(props.game)
 			}
 		})
 	}
 	const handleRequestClose = () => {
 		setOpen(false)
 	}
-
-	if (redirect) {
-		return <Redirect to='/'/>
-	}
 		return (<span>
-			<IconButton aria-label="Delete" onClick={clickButton} color="secondary">
-				<DeleteIcon/>
-			</IconButton>
-
+			<Button variant="contained" onClick={clickButton} style={{width: '50%', margin: 'auto'}}>
+				Delete
+			</Button>
 			<Dialog open={open} onClose={handleRequestClose}>
-				<DialogTitle>{"Delete Account"}</DialogTitle>
+				<DialogTitle>{"Delete "+props.game.name}</DialogTitle>
 				<DialogContent>
 					<DialogContentText>
-						Confirm to delete your account.
+						Confirm to delete your game {props.game.name}.
 					</DialogContentText>
 				</DialogContent>
 				<DialogActions>
 					<Button onClick={handleRequestClose} color="primary">
 						Cancel
 					</Button>
-					<Button onClick={deleteAccount} color="secondary" autoFocus="autoFocus">
+					<Button onClick={deleteGame} color="secondary" autoFocus="autoFocus">
 						Confirm
 					</Button>
 				</DialogActions>
 			</Dialog>
 		</span>)
-
+	
 }
-DeleteUser.propTypes = {
-	userId: PropTypes.string.isRequired
+DeleteGame.propTypes = {
+	game: PropTypes.object.isRequired,
+	removeGame: PropTypes.func.isRequired
 }
 

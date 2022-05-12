@@ -19,7 +19,7 @@ const Menu = withRouter(({history}) => (
 	<AppBar position="static">
 		<Toolbar>
 			<Typography type="title" color="inherit">
-				MERN VR Game
+				VR Game
 			</Typography>
 			<div>
 				<Link to="/">
